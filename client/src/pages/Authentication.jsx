@@ -4,8 +4,8 @@ import styled from "styled-components";
 import LogoImage from "../utils/Images/Logo.png";
 import AuthImage from "../utils/Images/AuthImage.jpg";
 import { Close } from "@mui/icons-material";
-// import SignIn from "../components/SignIn";
-// import SignUp from "../components/SignUp";
+import SignIn from '../components/SignIn'
+import SignUp from '../components/SignUp'
 
 const Container = styled.div`
   flex: 1;
@@ -84,7 +84,7 @@ const TextButton = styled.div`
 `;
 
 function Authentication({ setOpenAuth, openAuth }) {
-  const [login,setLogin] = useState(true)
+  const [login,setLogin] = useState(false)
   return (
     <Modal
       open={openAuth}
@@ -101,6 +101,25 @@ function Authentication({ setOpenAuth, openAuth }) {
           <CloseButton>
             <Close onClick={() => setOpenAuth(false)} />
           </CloseButton>
+          {login ? (
+            <>
+              <SignIn setOpenAuth={setOpenAuth} />
+              <Text>
+                {" "}
+                {/* to add a sapce we used {" "} */}
+                Don't have an account ?{" "}
+                <TextButton onClick={() => setLogin(false)}>Sign Up</TextButton>
+              </Text>
+            </>
+          ) : (
+            <>
+              <SignUp setOpenAuth={setOpenAuth} />
+              <Text>
+                Already have an account ?
+                <TextButton onClick={() => setLogin(true)}>Sign In</TextButton>
+              </Text>
+            </>
+          )}
         </Right>
       </Container>
     </Modal>
