@@ -8,7 +8,7 @@ import Authentication from "./pages/Authentication";
 import Favourites from "./pages/Favourites";
 import Cart from "./pages/Cart";
 import FoodDetails from "./pages/FoodDetails";
-import FoodListing from "./pages/FoodList";
+import FoodListing from "./pages/FoodListing";
 import { useSelector } from "react-redux";
 
 const Container = styled.div``;
@@ -24,8 +24,10 @@ function App() {
           <Navbar setOpenAuth={setOpenAuth} openAuth={openAuth} />
           <Routes>
             <Route path="/" element={<Home />} />
-            {/* <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} /> */}
+            <Route path="/favourite" element={<Favourites />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/dishes/:id" exact element={<FoodDetails />} />
+            <Route path="/dishes" exact element={<FoodListing />} />
           </Routes>
           {openAuth && (
             <Authentication setOpenAuth={setOpenAuth} openAuth={openAuth} />

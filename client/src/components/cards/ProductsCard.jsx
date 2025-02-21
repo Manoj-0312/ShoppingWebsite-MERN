@@ -31,6 +31,7 @@ const Image = styled.img`
 `;
 const Menu = styled.div`
   position: absolute;
+  z-index: 10;
   color: ${({ theme }) => theme.text_primary};
   top: 14px;
   right: 14px;
@@ -38,6 +39,7 @@ const Menu = styled.div`
   flex-direction: column;
   gap: 12px;
 `;
+
 const Top = styled.div`
   display: flex;
   align-items: center;
@@ -45,6 +47,13 @@ const Top = styled.div`
   position: relative;
   border-radius: 6px;
   transition: all 0.3s ease-out;
+  &:hover {
+    background-color: ${({ theme }) => theme.black};
+  }
+
+  &:hover ${Image} {
+    opacity: 0.9;
+  }
   &:hover ${Menu} {
     display: flex;
   }
@@ -62,6 +71,7 @@ const MenuItem = styled.div`
 `;
 const Rate = styled.div`
   position: absolute;
+  z-index: 10;
   color: ${({ theme }) => theme.text_primary};
   bottom: 8px;
   left: 8px;
@@ -102,6 +112,18 @@ const Price = styled.div`
   font-weight: 500;
   color: ${({ theme }) => theme.text_primary};
 `;
+const Percent = styled.div`
+  font-size: 12px;
+  font-weight: 500;
+  color: green;
+`;
+const Span = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text_secondary + 60};
+  text-decoration: line-through;
+  text-decoration-color: ${({ theme }) => theme.text_secondary + 50};
+`;
 
 const ProductsCard = ({ product }) => {
   const navigate = useNavigate();
@@ -110,35 +132,53 @@ const ProductsCard = ({ product }) => {
 
   return (
     <Card>
-      <Top>
-        <Image src={product?.img} />
-        <Menu>
-          <MenuItem onClick={() => setFavorite(!favorite)}>
-            {favoriteLoading ? (
+    <Top>
+      <Image src={product?.img} />
+      <Menu>
+        <MenuItem
+          // onClick={() => (favorite ? removeFavourite() : addFavourite())}
+        >
+          {favoriteLoading ? (
+            <>
               <CircularProgress sx={{ fontSize: "20px" }} />
-            ) : favorite ? (
-              <FavoriteRounded sx={{ fontSize: "20px", color: "red" }} />
-            ) : (
-              <FavoriteBorder sx={{ fontSize: "20px" }} />
-            )}
-          </MenuItem>
-          <MenuItem>
-            <ShoppingBagOutlined sx={{ fontSize: "20px" }} />
-          </MenuItem>
-        </Menu>
-        <Rate>
-          <Rating value={4} sx={{ fontSize: "14px" }} />
-        </Rate>
-      </Top>
-      <Details onClick={() => navigate(`/dishes/${product._id}`)}>
-        <Title>{product?.name}</Title>
-        <Desc>{product?.desc}</Desc>
-        <Price>
-          ${product?.price?.org} <span>${product?.price?.mrp}</span>
-        </Price>
-      </Details>
-    </Card>
+            </>
+          ) : (
+            <>
+              {favorite ? (
+                <FavoriteRounded sx={{ fontSize: "20px", color: "red" }} />
+              ) : (
+                <FavoriteBorder sx={{ fontSize: "20px" }} />
+              )}
+            </>
+          )}
+        </MenuItem>
+        <MenuItem >
+          <ShoppingBagOutlined sx={{ fontSize: "20px" }} />
+        </MenuItem>
+      </Menu>
+      <Rate>
+        <Rating value={3.5} sx={{ fontSize: "14px" }} />
+      </Rate>
+    </Top>
+    <Details onClick={() => navigate(`/dishes/${product._id}`)}>
+      <Title>{product?.name}</Title>
+      <Desc>{product?.desc}</Desc>
+      <Price>
+        ${product?.price?.org} <Span>${product?.price?.mrp}</Span>
+        <Percent> ({product?.price?.off}% Off) </Percent>
+      </Price>
+    </Details>
+  </Card>
   );
 };
 
+
+ProductsCard.defaultProps = {
+  product: {
+    name: "Classic Burger",
+    desc: "A juicy beef patty with fresh veggies and cheese.",
+    img: "https://bonmasala.com/wp-content/uploads/2022/10/mutton-biriyani-recipe.jpeg",
+    price: { org: 5.99, mrp: 7.99,off:20 },
+      },
+      };
 export default ProductsCard;
