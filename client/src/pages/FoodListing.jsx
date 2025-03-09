@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ProductCard from "../components/cards/ProductsCard";
 import { filter } from "../utils/data";
 import { CircularProgress, Slider } from "@mui/material";
+import { getAllProducts } from "../api";
 
 const Container = styled.div`
   padding: 20px 30px;
@@ -10,7 +11,7 @@ const Container = styled.div`
   height: 100%;
   overflow-y: scroll;
   display: flex;
-  align-items: center;
+  align-items: start;
   flex-direction: row;
   gap: 30px;
   @media (max-width: 700px) {
@@ -22,7 +23,6 @@ const Container = styled.div`
 const Filters = styled.div`
   padding: 20px 16px;
   flex: 1;
-  background: "red";
   width: 100%;
   max-width: 300px;
   @media (max-width: 700px) {
@@ -83,8 +83,30 @@ const Selectableitem = styled.div`
 `;
 
 const FoodListing = () => {
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 1000]); // Default price range
   const [selectedCategories, setSelectedCategories] = useState([]); // Default selected categories
+
+  const getFilteredProductsData = async () => {
+    setLoading(true);
+    // Call the API function for filtered products
+    await getAllProducts(
+      selectedCategories.length > 0
+        ? `minPrice=${priceRange[0]}&maxPrice=${
+            priceRange[1]
+          }&categories=${selectedCategories.join(",")}`
+        : `minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`
+    ).then((res) => {
+      setProducts(res.data);
+      setLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    getFilteredProductsData();
+  }, [priceRange, selectedCategories]);
+
   return (
     <Container>
       <Filters>
@@ -95,7 +117,7 @@ const FoodListing = () => {
               {filters.value === "price" ? (
                 <Slider
                   aria-label="Price"
-                  defaultValue={priceRange}
+                  value={priceRange}
                   min={0}
                   max={1000}
                   valueLabelDisplay="auto"
@@ -132,18 +154,15 @@ const FoodListing = () => {
       </Filters>
       <Products>
         <CardWrapper>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />  
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </>
+          )}
         </CardWrapper>
       </Products>
     </Container>

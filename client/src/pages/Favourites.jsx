@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ProductsCard from "../components/cards/ProductsCard";
-// import { getFavourite } from "../api";
-// import { CircularProgress } from "@mui/material";
+import { getFavourite } from "../api/index.js";
+import { CircularProgress } from "@mui/material";
 const Container = styled.div`
   padding: 20px 30px;
   padding-bottom: 200px;
@@ -23,6 +23,8 @@ const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 28px;
+  font-size: 22px;
+
 `;
 const Title = styled.div`
   font-size: 28px;
@@ -41,30 +43,37 @@ const CardWrapper = styled.div`
   }
 `;
 const Favourites = () => {
-  // const [loading, setLoading] = useState(false);
-  // const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
 
-  // const getProducts = async () => {
-  //   setLoading(true);
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await getFavourite(token).then((res) => {
-  //     setProducts(res.data);
-  //     setLoading(false);
-  //   });
-  // };
+  const getProducts = async (res) => {
+    setLoading(true);
+    const token = localStorage.getItem("authToken"); 
+  // if (!token) return console.log("No token found!");
+    await getFavourite(token).then((res) => {
+      setProducts(res.data);
+      setLoading(false);
+    });
+  };
 
-  // useEffect(() => {
-  //   getProducts();
-  // }, []);
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
     <Container>
       <Section>
         <Title>Your Favourites</Title>
         <CardWrapper>
-                <ProductsCard />
-                <ProductsCard />
-                <ProductsCard />
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            products.length === 0 ? (<> No Favorites </>):
+              (products.map((product) => (
+                <ProductsCard product={product} />
+              )))
+            
+          )}
         </CardWrapper>
       </Section>
     </Container>

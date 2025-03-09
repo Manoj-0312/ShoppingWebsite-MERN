@@ -14,18 +14,22 @@ import { useSelector } from "react-redux";
 const Container = styled.div``;
 
 function App() {
-
-  const [openAuth , setOpenAuth] = useState(false);
-
+  const { currentUser } = useSelector((state) => state.user);
+  const { open, message, severity } = useSelector((state) => state.snackbar);
+  const [openAuth, setOpenAuth] = useState(false);
   return (
     <ThemeProvider theme={lightTheme}>
       <BrowserRouter>
         <Container>
-          <Navbar setOpenAuth={setOpenAuth} openAuth={openAuth} />
+          <Navbar
+            setOpenAuth={setOpenAuth}
+            openAuth={openAuth}
+            currentUser={currentUser}
+          />
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/favourite" element={<Favourites />} />
-            <Route path="/cart" element={<Cart />} />
+            <Route path="/" exact element={<Home />} />
+            <Route path="/favorite" exact element={<Favourites />} />
+            <Route path="/cart" exact element={<Cart />} />
             <Route path="/dishes/:id" exact element={<FoodDetails />} />
             <Route path="/dishes" exact element={<FoodListing />} />
           </Routes>

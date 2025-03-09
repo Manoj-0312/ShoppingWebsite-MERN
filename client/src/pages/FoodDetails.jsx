@@ -8,16 +8,16 @@ import {
   FavoriteRounded,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
-// import {
-//   addToCart,
-//   addToFavourite,
-//   deleteFromCart,
-//   deleteFromFavourite,
-//   getFavourite,
-//   getProductDetails,
-// } from "../api";
-// import { openSnackbar } from "../redux/reducers/SnackbarSlice";
-// import { useDispatch } from "react-redux";
+import {
+  addToCart,
+  addToFavourite,
+  deleteFromCart,
+  deleteFromFavourite,
+  getFavourite,
+  getProductDetails,
+} from "../api";
+import { openSnackbar } from "../redux/reducers/SnackbarSlice";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
   padding: 20px 30px;
@@ -106,7 +106,7 @@ const Percent = styled.div`
 const Ingridents = styled.div`
   font-size: 16px;
   font-weight: 500;
-  display: flex;
+  diaplay: flex;
   flex-direction: column;
   gap: 24px;
 `;
@@ -135,21 +135,10 @@ const ButtonWrapper = styled.div`
     padding: 12px 0px;
   }
 `;
-const product_data = {
-  img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Desserts.jpg/520px-Desserts.jpg", // Placeholder image
-  name: "Delicious Veg Burger",
-  price: {
-    org: 199,
-    mrp: 249,
-    off: 20,
-  },
-  desc: "A juicy and fresh veg burger made with organic ingredients, served with crispy fries.",
-  ingredients: ["Lettuce", "Tomato", "Cheese", "Veg Patty", "Sesame Bun", "Sauce"],
-};
 
 const FoodDetails = () => {
   const { id } = useParams();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [favorite, setFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
@@ -157,97 +146,97 @@ const FoodDetails = () => {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState();
 
-  // const getProduct = async () => {
-  //   setLoading(true);
-  //   await getProductDetails(id).then((res) => {
-  //     setProduct(res.data);
-  //     setLoading(false);
-  //   });
-  // };
+  const getProduct = async () => {
+    setLoading(true);
+    await getProductDetails(id).then((res) => {
+      setProduct(res.data);
+      setLoading(false);
+    });
+  };
 
-  // const removeFavourite = async () => {
-  //   setFavoriteLoading(true);
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await deleteFromFavourite(token, { productId: id })
-  //     .then((res) => {
-  //       setFavorite(false);
-  //       setFavoriteLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setFavoriteLoading(false);
-  //       dispatch(
-  //         openSnackbar({
-  //           message: err.message,
-  //           severity: "error",
-  //         })
-  //       );
-  //     });
-  // };
+  const removeFavourite = async () => {
+    setFavoriteLoading(true);
+    const token = localStorage.getItem("authToken");
+    await deleteFromFavourite(token, { productId: id })
+      .then((res) => {
+        setFavorite(false);
+        setFavoriteLoading(false);
+      })
+      .catch((err) => {
+        setFavoriteLoading(false);
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
 
-  // const addFavourite = async () => {
-  //   setFavoriteLoading(true);
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await addToFavourite(token, { productId: id })
-  //     .then((res) => {
-  //       setFavorite(true);
-  //       setFavoriteLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setFavoriteLoading(false);
-  //       dispatch(
-  //         openSnackbar({
-  //           message: err.message,
-  //           severity: "error",
-  //         })
-  //       );
-  //     });
-  // };
+  const addFavourite = async () => {
+    setFavoriteLoading(true);
+    const token = localStorage.getItem("");
+    await addToFavourite(token, { productId: id })
+      .then((res) => {
+        setFavorite(true);
+        setFavoriteLoading(false);
+      })
+      .catch((err) => {
+        setFavoriteLoading(false);
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
 
-  // const checkFavorite = async () => {
-  //   setFavoriteLoading(true);
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await getFavourite(token, { productId: id })
-  //     .then((res) => {
-  //       const isFavorite = res.data?.some((favorite) => favorite._id === id);
+  const checkFavorite = async () => {
+    setFavoriteLoading(true);
+    const token = localStorage.getItem("authToken");
+    await getFavourite(token, { productId: id })
+      .then((res) => {
+        const isFavorite = res.data?.some((favorite) => favorite._id === id);
 
-  //       setFavorite(isFavorite);
+        setFavorite(isFavorite);
 
-  //       setFavoriteLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       setFavoriteLoading(false);
-  //       dispatch(
-  //         openSnackbar({
-  //           message: err.message,
-  //           severity: "error",
-  //         })
-  //       );
-  //     });
-  // };
+        setFavoriteLoading(false);
+      })
+      .catch((err) => {
+        setFavoriteLoading(false);
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
 
-  // useEffect(() => {
-  //   getProduct();
-  //   checkFavorite();
-  // }, []);
+  useEffect(() => {
+    getProduct();
+    checkFavorite();
+  }, []);
 
-  // const addCart = async () => {
-  //   setCartLoading(true);
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await addToCart(token, { productId: id, quantity: 1 })
-  //     .then((res) => {
-  //       setCartLoading(false);
-  //       navigate("/cart");
-  //     })
-  //     .catch((err) => {
-  //       setCartLoading(false);
-  //       dispatch(
-  //         openSnackbar({
-  //           message: err.message,
-  //           severity: "error",
-  //         })
-  //       );
-  //     });
-  // };
+  const addCart = async () => {
+    setCartLoading(true);
+    const token = localStorage.getItem("authToken");
+    await addToCart(token, { productId: id, quantity: 1 })
+      .then((res) => {
+        setCartLoading(false);
+        navigate("/cart");
+      })
+      .catch((err) => {
+        setCartLoading(false);
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
 
   return (
     <Container>
@@ -256,24 +245,24 @@ const FoodDetails = () => {
       ) : (
         <Wrapper>
           <ImagesWrapper>
-            <Image src={product_data?.img} />
+            <Image src={product?.img} />
           </ImagesWrapper>
           <Details>
             <div>
-              <Title>{product_data?.name}</Title>
+              <Title>{product?.name}</Title>
             </div>
             <Rating value={3.5} />
             <Price>
-              ₹{product_data?.price?.org} <Span>₹{product_data?.price?.mrp}</Span>{" "}
-              <Percent> (₹{product_data?.price?.off}% Off) </Percent>
+              ₹{product?.price?.org} <Span>₹{product?.price?.mrp}</Span>{" "}
+              <Percent> (₹{product?.price?.off}% Off) </Percent>
             </Price>
 
-            <Desc>{product_data?.desc}</Desc>
+            <Desc>{product?.desc}</Desc>
 
             <Ingridents>
               Ingridents
               <Items>
-                {product_data?.ingredients.map((ingredient) => (
+                {product?.ingredients.map((ingredient) => (
                   <Item>{ingredient}</Item>
                 ))}
               </Items>
@@ -285,7 +274,7 @@ const FoodDetails = () => {
                 full
                 outlined
                 isLoading={cartLoading}
-                // onClick={() => addCart()}
+                onClick={() => addCart()}
               />
               <Button text="Order Now" full />
               <Button
@@ -299,7 +288,7 @@ const FoodDetails = () => {
                 full
                 outlined
                 isLoading={favoriteLoading}
-                // onClick={() => (favorite ? removeFavourite() : addFavourite())}
+                onClick={() => (favorite ? removeFavourite() : addFavourite())}
               />
             </ButtonWrapper>
           </Details>

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import TextInput from "../components/TextInput";
 import Button from "../components/Button";
-// import { addToCart, deleteFromCart, getCart, placeOrder } from "../api";
+import { addToCart, deleteFromCart, getCart, placeOrder } from "../api";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-// import { useDispatch } from "react-redux";
-// import { openSnackbar } from "../redux/reducers/SnackbarSlice";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../redux/reducers/SnackbarSlice";
 import { DeleteOutline } from "@mui/icons-material";
 
 const Container = styled.div`
@@ -138,7 +138,7 @@ const Delivery = styled.div`
 
 const Cart = () => {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [reload, setReload] = useState(false);
   const [products, setProducts] = useState([]);
@@ -151,118 +151,118 @@ const Cart = () => {
     completeAddress: "",
   });
 
-  // const getProducts = async () => {
-  //   setLoading(true);
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await getCart(token).then((res) => {
-  //     setProducts(res.data);
-  //     setLoading(false);
-  //   });
-  // };
+  const getProducts = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("authToken");
+    await getCart(token).then((res) => {
+      setProducts(res.data);
+      setLoading(false);
+    });
+  };
 
-  // const calculateSubtotal = () => {
-  //   return products.reduce(
-  //     (total, item) => total + item.quantity * item?.product?.price?.org,
-  //     0
-  //   );
-  // };
-  // const convertAddressToString = (addressObj) => {
-  //   // Convert the address object to a string representation
-  //   return `${addressObj.firstName} ${addressObj.lastName}, ${addressObj.completeAddress}, ${addressObj.phoneNumber}, ${addressObj.emailAddress}`;
-  // };
+  const calculateSubtotal = () => {
+    return products.reduce(
+      (total, item) => total + item.quantity * item?.product?.price?.org,
+      0
+    );
+  };
+  const convertAddressToString = (addressObj) => {
+    // Convert the address object to a string representation
+    return `${addressObj.firstName} ${addressObj.lastName}, ${addressObj.completeAddress}, ${addressObj.phoneNumber}, ${addressObj.emailAddress}`;
+  };
 
-  // const PlaceOrder = async () => {
-  //   setButtonLoad(true);
-  //   try {
-  //     const isDeliveryDetailsFilled =
-  //       deliveryDetails.firstName &&
-  //       deliveryDetails.lastName &&
-  //       deliveryDetails.completeAddress &&
-  //       deliveryDetails.phoneNumber &&
-  //       deliveryDetails.emailAddress;
+  const PlaceOrder = async () => {
+    setButtonLoad(true);
+    try {
+      const isDeliveryDetailsFilled =
+        deliveryDetails.firstName &&
+        deliveryDetails.lastName &&
+        deliveryDetails.completeAddress &&
+        deliveryDetails.phoneNumber &&
+        deliveryDetails.emailAddress;
 
-  //     if (!isDeliveryDetailsFilled) {
-  //       // Show an error message or handle the situation where delivery details are incomplete
-  //       dispatch(
-  //         openSnackbar({
-  //           message: "Please fill in all required delivery details.",
-  //           severity: "error",
-  //         })
-  //       );
-  //       return;
-  //     }
+      if (!isDeliveryDetailsFilled) {
+        // Show an error message or handle the situation where delivery details are incomplete
+        dispatch(
+          openSnackbar({
+            message: "Please fill in all required delivery details.",
+            severity: "error",
+          })
+        );
+        return;
+      }
 
-  //     const token = localStorage.getItem("krist-app-token");
-  //     const totalAmount = calculateSubtotal().toFixed(2);
-  //     const orderDetails = {
-  //       products,
-  //       address: convertAddressToString(deliveryDetails),
-  //       totalAmount,
-  //     };
+      const token = localStorage.getItem("authToken");
+      const totalAmount = calculateSubtotal().toFixed(2);
+      const orderDetails = {
+        products,
+        address: convertAddressToString(deliveryDetails),
+        totalAmount,
+      };
 
-  //     await placeOrder(token, orderDetails);
-  //     dispatch(
-  //       openSnackbar({
-  //         message: "Order placed successfully",
-  //         severity: "success",
-  //       })
-  //     );
-  //     setButtonLoad(false);
-  //     // Clear the cart and update the UI
-  //     setReload(!reload);
-  //   } catch (err) {
-  //     dispatch(
-  //       openSnackbar({
-  //         message: "Failed to place order. Please try again.",
-  //         severity: "error",
-  //       })
-  //     );
-  //     setButtonLoad(false);
-  //   }
-  // };
+      await placeOrder(token, orderDetails);
+      dispatch(
+        openSnackbar({
+          message: "Order placed successfully",
+          severity: "success",
+        })
+      );
+      setButtonLoad(false);
+      // Clear the cart and update the UI
+      setReload(!reload);
+    } catch (err) {
+      dispatch(
+        openSnackbar({
+          message: "Failed to place order. Please try again.",
+          severity: "error",
+        })
+      );
+      setButtonLoad(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   getProducts();
-  // }, [reload]);
+  useEffect(() => {
+    getProducts();
+  }, [reload]);
 
-  // const addCart = async (id) => {
-  //   const token = localStorage.getItem("krist-app-token");
-  //   await addToCart(token, { productId: id, quantity: 1 })
-  //     .then((res) => {
-  //       setReload(!reload);
-  //     })
-  //     .catch((err) => {
-  //       setReload(!reload);
-  //       dispatch(
-  //         openSnackbar({
-  //           message: err.message,
-  //           severity: "error",
-  //         })
-  //       );
-  //     });
-  // };
+  const addCart = async (id) => {
+    const token = localStorage.getItem("authToken");
+    await addToCart(token, { productId: id, quantity: 1 })
+      .then((res) => {
+        setReload(!reload);
+      })
+      .catch((err) => {
+        setReload(!reload);
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
 
-  // const removeCart = async (id, quantity, type) => {
-  //   const token = localStorage.getItem("krist-app-token");
-  //   let qnt = quantity > 0 ? 1 : null;
-  //   if (type === "full") qnt = null;
-  //   await deleteFromCart(token, {
-  //     productId: id,
-  //     quantity: qnt,
-  //   })
-  //     .then((res) => {
-  //       setReload(!reload);
-  //     })
-  //     .catch((err) => {
-  //       setReload(!reload);
-  //       dispatch(
-  //         openSnackbar({
-  //           message: err.message,
-  //           severity: "error",
-  //         })
-  //       );
-  //     });
-  // };
+  const removeCart = async (id, quantity, type) => {
+    const token = localStorage.getItem("authToken");
+    let qnt = quantity > 0 ? 1 : null;
+    if (type === "full") qnt = null;
+    await deleteFromCart(token, {
+      productId: id,
+      quantity: qnt,
+    })
+      .then((res) => {
+        setReload(!reload);
+      })
+      .catch((err) => {
+        setReload(!reload);
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
   return (
     <Container>
       <Section>
@@ -271,7 +271,7 @@ const Cart = () => {
           <CircularProgress />
         ) : (
           <>
-            {!products.length === 0 ? (
+            {! products.length === 0 ? (
               <>Cart is empty</>
             ) : (
               <Wrapper>
@@ -304,6 +304,9 @@ const Cart = () => {
                               cursor: "pointer",
                               flex: 1,
                             }}
+                            onClick={() =>
+                              removeCart(item?.product?._id, item?.quantity - 1)
+                            }
                           >
                             -
                           </div>
@@ -313,6 +316,7 @@ const Cart = () => {
                               cursor: "pointer",
                               flex: 1,
                             }}
+                            onClick={() => addCart(item?.product?._id)}
                           >
                             +
                           </div>
@@ -324,15 +328,23 @@ const Cart = () => {
                         {(item.quantity * item?.product?.price?.org).toFixed(2)}
                       </TableItem>
                       <TableItem>
-                        <DeleteOutline sx={{ color: "red" }} />
+                        <DeleteOutline
+                          sx={{ color: "red" }}
+                          onClick={() =>
+                            removeCart(
+                              item?.product?._id,
+                              item?.quantity - 1,
+                              "full"
+                            )
+                          }
+                        />
                       </TableItem>
                     </Table>
                   ))}
                 </Left>
                 <Right>
                   <Subtotal>
-                    Subtotal : $199.98
-                    {/* Subtotal : ${calculateSubtotal().toFixed(2)} */}
+                    Subtotal : ${calculateSubtotal().toFixed(2)}
                   </Subtotal>
                   <Delivery>
                     Delivery Details:
@@ -420,9 +432,9 @@ const Cart = () => {
                     </div>
                   </Delivery>
                   <Button
-                    text="Place Order"
+                    text="Pace Order"
                     small
-                    // onClick={PlaceOrder}
+                    onClick={PlaceOrder}
                     isLoading={buttonLoad}
                     isDisabled={buttonLoad}
                   />

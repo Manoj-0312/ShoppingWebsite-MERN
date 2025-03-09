@@ -13,11 +13,11 @@ export const userSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       state.currentUser = action.payload.user;
-      localStorage.setItem("foodeli-app-token", action.payload.token);
+      localStorage.setItem("authToken", action.payload.token);
     },
     logout: (state) => {
       state.currentUser = null;
-      localStorage.removeItem("foodeli-app-token");
+      localStorage.removeItem("authToken");
     },
   },
 });
