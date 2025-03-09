@@ -41,7 +41,6 @@ const Image = styled.img`
 `;
 const Menu = styled.div`
   position: absolute;
-  z-index: 10;
   color: ${({ theme }) => theme.text_primary};
   top: 14px;
   right: 14px;
@@ -77,11 +76,9 @@ const MenuItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 200;
 `;
 const Rate = styled.div`
   position: absolute;
-  z-index: 10;
   color: ${({ theme }) => theme.text_primary};
   bottom: 8px;
   left: 8px;
@@ -143,7 +140,7 @@ const ProductsCard = ({ product }) => {
 
   const addFavourite = async () => {
     setFavoriteLoading(true);
-    const token = localStorage.getItem("krist-app-token");
+    const token = localStorage.getItem("authToken");
     await addToFavourite(token, { productId: product?._id })
       .then((res) => {
         setFavorite(true);
@@ -163,7 +160,7 @@ const ProductsCard = ({ product }) => {
 
   const removeFavourite = async () => {
     setFavoriteLoading(true);
-    const token = localStorage.getItem("krist-app-token");
+    const token = localStorage.getItem("authToken");
     await deleteFromFavourite(token, { productId: product?._id })
       .then((res) => {
         setFavorite(false);
@@ -182,7 +179,7 @@ const ProductsCard = ({ product }) => {
 
   const checkFavorite = async () => {
     setFavoriteLoading(true);
-    const token = localStorage.getItem("krist-app-token");
+    const token = localStorage.getItem("authToken");
     await getFavourite(token, { productId: product?._id })
       .then((res) => {
         const isFavorite = res.data?.some(
@@ -205,7 +202,7 @@ const ProductsCard = ({ product }) => {
   };
 
   const addCart = async (id) => {
-    const token = localStorage.getItem("krist-app-token");
+    const token = localStorage.getItem("authToken");
     await addToCart(token, { productId: id, quantity: 1 })
       .then((res) => {
         navigate("/cart");
@@ -224,9 +221,9 @@ const ProductsCard = ({ product }) => {
     checkFavorite();
   }, [favorite]);
   return (
-    <Card onClick={()=>navigate(`/dishes/${product._id}`)}>
+    <Card>
       <Top>
-        <Image src={product?.img} />
+        <Image src={product?.img} onClick={()=>navigate(`/dishes/${product._id}`)}/>
         <Menu>
           <MenuItem
             onClick={() => (favorite ? removeFavourite() : addFavourite())}

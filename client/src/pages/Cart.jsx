@@ -432,7 +432,7 @@ const Cart = () => {
                     </div>
                   </Delivery>
                   <Button
-                    text="Pace Order"
+                    text="Place Order"
                     small
                     onClick={PlaceOrder}
                     isLoading={buttonLoad}

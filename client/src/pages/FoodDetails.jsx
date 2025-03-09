@@ -175,7 +175,7 @@ const FoodDetails = () => {
 
   const addFavourite = async () => {
     setFavoriteLoading(true);
-    const token = localStorage.getItem("");
+    const token = localStorage.getItem("authToken");
     await addToFavourite(token, { productId: id })
       .then((res) => {
         setFavorite(true);
@@ -225,7 +225,7 @@ const FoodDetails = () => {
     await addToCart(token, { productId: id, quantity: 1 })
       .then((res) => {
         setCartLoading(false);
-        navigate("/cart");
+        // navigate("/cart");
       })
       .catch((err) => {
         setCartLoading(false);
